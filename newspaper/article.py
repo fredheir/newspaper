@@ -70,6 +70,8 @@ class Article(object):
         # Body text from this article
         self.text = ''
 
+        self.body_links=''
+
         # `keywords` are extracted via nlp() from the body text
         self.keywords = []
 
@@ -216,12 +218,14 @@ class Article(object):
             self.set_movies(video_extractor.get_videos())
 
             self.top_node = self.extractor.post_cleanup(self.top_node)
+            self.body_links=self.extractor.get_urls(self.top_node)
             self.clean_top_node = copy.deepcopy(self.top_node)
 
             text, article_html = output_formatter.get_formatted(
                 self.top_node)
             self.set_article_html(article_html)
             self.set_text(text)
+            self.body_links(urls)
 
         if self.config.fetch_images:
             self.fetch_images()
@@ -383,6 +387,7 @@ class Article(object):
         if text:
             self.text = text
 
+            
     def set_html(self, html):
         """Encode HTML before setting it
         """
